@@ -11,6 +11,16 @@
 
 **Zero Node.js** • **Pydantic v2** • **Full Async** • **Military-Grade Security**
 
+## 🎯 Live Demo
+
+**[👉 Try the Live Demo →](https://fastapi-shadcn-admin.vercel.app)**
+
+Experience the Matrix-themed UI with auto-discovered models. The demo showcases:
+- ✨ Matrix green/black aesthetic with terminal-style design
+- 🔍 Auto-discovery of 4 models (BlogPost, Product, Author, Category)
+- 📝 Full CRUD operations (read-only mode for public safety)
+- 🎨 Smooth animations and micro-interactions
+
 ---
 
 ## ✨ Why FastAPI Shadcn Admin?
