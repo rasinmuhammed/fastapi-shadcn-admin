@@ -4,7 +4,8 @@
 
 [![PyPI version](https://badge.fury.io/py/fastapi-shadcn-admin.svg)](https://badge.fury.io/py/fastapi-shadcn-admin)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-27%2F30%20passing-green.svg)](https://github.com/rasinmuhammed/fastapi-shadcn-admin)
+[![Tests](https://github.com/rasinmuhammed/fastapi-shadcn-admin/workflows/Tests/badge.svg)](https://github.com/rasinmuhammed/fastapi-shadcn-admin/actions/workflows/tests.yml)
+[![Code Quality](https://github.com/rasinmuhammed/fastapi-shadcn-admin/workflows/Code%20Quality/badge.svg)](https://github.com/rasinmuhammed/fastapi-shadcn-admin/actions/workflows/quality.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
