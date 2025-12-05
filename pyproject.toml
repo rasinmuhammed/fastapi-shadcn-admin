@@ -29,6 +29,7 @@ keywords = ["fastapi", "admin", "pydantic", "htmx", "shadcn"]
 dependencies = [
     "fastapi>=0.100.0",
     "pydantic>=2.0",
+    "pydantic[email]>=2.0",
     "sqlalchemy[asyncio]>=2.0",
     "jinja2>=3.1.0",
     "itsdangerous>=2.1.0",
@@ -61,3 +62,10 @@ packages = ["fastapi_shadcn_admin"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+markers = [
+    "asyncio: mark test as async",
+]

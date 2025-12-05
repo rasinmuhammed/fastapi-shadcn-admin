@@ -99,19 +99,18 @@ class LoginRequest(BaseModel):
 
 
 class UserResponse(BaseModel):
-    """User response schema (without password)."""
+    """User response model for API."""
 
     id: int
     username: str
-    email: str
-    roles: List[str]
+    email: EmailStr
     is_active: bool
     is_superuser: bool
+    roles: list[str] = []
     created_at: datetime
     last_login: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CreateUserRequest(BaseModel):
