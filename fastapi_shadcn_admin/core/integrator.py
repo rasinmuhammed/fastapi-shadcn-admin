@@ -535,8 +535,6 @@ class SchemaWalker:
         """
         for m in metadata:
             # Handle annotated constraints
-            m_type = type(m).__name__
-
             if hasattr(m, "min_length"):
                 field_def.min_length = m.min_length
             if hasattr(m, "max_length"):
