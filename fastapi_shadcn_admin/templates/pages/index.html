@@ -4,208 +4,379 @@
 {% block title %}Dashboard - {{ admin_title }}{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
-    {# Header #}
-    <div>
-        <h1 class="text-4xl font-bold tracking-tight text-foreground">Dashboard</h1>
-        <p class="text-muted-foreground mt-2">Welcome to {{ admin_title }}</p>
-    </div>
+<div class="space-y-6">
+    {# Futuristic Hero Header - Green Matrix Aesthetic #}
+    <div
+        class="relative overflow-hidden rounded-2xl bg-black border border-emerald-500/20 p-8 shadow-2xl shadow-emerald-500/10">
+        {# Animated gradient background #}
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-950 via-black to-black opacity-80"></div>
+        {# Green glow spill effect #}
+        <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-72 h-72 bg-lime-500/10 rounded-full blur-3xl"></div>
 
-    {# KPI Cards #}
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {% for kpi in kpis %}
-        <div class="rounded-lg border border-border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-muted-foreground">{{ kpi.label }}</p>
-                    <h3 class="text-3xl font-bold text-foreground mt-2">{{ kpi.value }}</h3>
-                    {% if kpi.change %}
-                    <p class="text-xs mt-2 {% if kpi.change > 0 %}text-green-500{% else %}text-red-500{% endif %}">
-                        {% if kpi.change > 0 %}↗{% else %}↘{% endif %} {{ kpi.change }}% from last month
-                    </p>
-                    {% endif %}
+                    <div class="flex items-center space-x-3 mb-2">
+                        <div class="h-1 w-12 bg-gradient-to-r from-emerald-500 to-lime-400"></div>
+                        <span class="text-emerald-400 text-sm font-mono uppercase tracking-wider">System Active</span>
+                    </div>
+                    <h1 class="text-6xl font-black tracking-tight text-white mb-2"
+                        style="text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);">
+                        Dashboard
+                    </h1>
+                    <p class="text-emerald-100 text-lg font-light">{{ admin_title }} Control Center</p>
                 </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                    <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {% if kpi.icon == "users" %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        {% elif kpi.icon == "database" %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                        {% elif kpi.icon == "activity" %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        {% else %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        {% endif %}
-                    </svg>
+                {# Live metrics badge #}
+                <div class="hidden md:flex flex-col items-end space-y-2">
+                    <div class="flex items-center space-x-2 text-emerald-400 text-sm font-mono">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></div>
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 absolute"></div>
+                        <span id="currentTime" class="text-emerald-300"></span>
+                    </div>
+                    <div class="text-xs text-emerald-600 font-mono">{{ registered_models|length }} MODULES ONLINE</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {# Sleek KPI Cards - Terminal Aesthetic #}
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {% for kpi in kpis %}
+        <div
+            class="group relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-5 hover:border-emerald-400/60 transition-all duration-300">
+            {# Green glow on hover #}
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            </div>
+            {# Corner accent #}
+            <div
+                class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-400/20 transition-all">
+            </div>
+
+            <div class="relative z-10">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-mono text-emerald-500 uppercase tracking-widest mb-1">{{ kpi.label }}</p>
+                        <h3 class="text-4xl font-black text-white group-hover:text-emerald-100 transition-colors">
+                            {{ kpi.value }}
+                        </h3>
+                    </div>
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 group-hover:bg-emerald-500/20 group-hover:border-emerald-400/50 transition-all">
+                        <svg class="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2">
+                            {% if kpi.icon == "users" %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            {% elif kpi.icon == "database" %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                            {% elif kpi.icon == "activity" %}
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            {% else %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            {% endif %}
+                        </svg>
+                    </div>
+                </div>
+                {% if kpi.change %}
+                <div class="flex items-center space-x-2 text-sm font-mono">
+                    <div
+                        class="flex items-center space-x-1 {% if kpi.change > 0 %}text-emerald-400{% else %}text-red-400{% endif %}">
+                        <span class="text-xs">{{ '+' if kpi.change > 0 else '' }}{{ kpi.change }}%</span>
+                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="{% if kpi.change > 0 %}M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z{% else %}M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z{% endif %}"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <span class="text-emerald-700 text-xs">30d</span>
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
     </div>
 
-    {# Charts Section #}
-    <div class="grid gap-6 md:grid-cols-2">
+    {# Modern Charts Section #}
+    <div class="grid gap-6 lg:grid-cols-2">
         {# Activity Chart #}
-        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-foreground mb-4">Activity Last 7 Days</h3>
-            <canvas id="activityChart" height="200"></canvas>
+        <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white font-mono">ACTIVITY STREAM</h3>
+                    <div class="flex items-center space-x-2">
+                        <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span class="text-xs text-emerald-500 font-mono uppercase">Live</span>
+                    </div>
+                </div>
+                <div style="height: 250px;">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
         </div>
 
         {# Model Distribution Chart #}
-        <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-foreground mb-4">Records by Model</h3>
-            <canvas id="modelChart" height="200"></canvas>
-        </div>
-    </div>
-
-    {# Quick Actions #}
-    <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
-        <div class="grid gap-4 md:grid-cols-3">
-            {% for model_name in registered_models[:6] %}
-            <a href="{{ url_for('admin:list', model=model_name) }}"
-                class="flex items-center space-x-3 rounded-lg border border-border p-4 hover:bg-accent hover:border-primary transition-all">
-                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                    <svg class="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+        <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+            <div class="absolute top-0 left-0 w-40 h-40 bg-lime-500/5 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white font-mono">DATA DISTRIBUTION</h3>
+                    <span class="text-xs text-emerald-600 font-mono">{{ chart_data.model_values | sum if
+                        chart_data.model_values else 0 }} RECORDS</span>
                 </div>
-                <div>
-                    <p class="font-medium text-foreground">Add {{ model_name }}</p>
-                    <p class="text-xs text-muted-foreground">Create new record</p>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-
-    {# Recent Activity Feed #}
-    {% if recent_activity %}
-    <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-foreground mb-4">Recent Activity</h3>
-        <div class="space-y-4">
-            {% for activity in recent_activity %}
-            <div class="flex items-start space-x-3 pb-4 border-b border-border last:border-0">
-                <div
-                    class="flex h-8 w-8 items-center justify-center rounded-full 
-                            {% if activity.action == 'create' %}bg-green-500/10{% elif activity.action == 'update' %}bg-blue-500/10{% else %}bg-red-500/10{% endif %}">
-                    <svg class="h-4 w-4 {% if activity.action == 'create' %}text-green-500{% elif activity.action == 'update' %}text-blue-500{% else %}text-red-500{% endif %}"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {% if activity.action == 'create' %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        {% elif activity.action == 'update' %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        {% else %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        {% endif %}
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm text-foreground">
-                        <span class="font-medium">{{ activity.username or "System" }}</span>
-                        <span class="text-muted-foreground">
-                            {% if activity.action == 'create' %}created{% elif activity.action == 'update' %}updated{%
-                            else %}deleted{% endif %}
-                        </span>
-                        <span class="font-medium">{{ activity.model_name }}</span>
-                    </p>
-                    <p class="text-xs text-muted-foreground mt-1">{{ activity.created_at }}</p>
+                <div style="height: 250px;">
+                    <canvas id="modelChart"></canvas>
                 </div>
             </div>
-            {% endfor %}
+        </div>
+    </div>
+
+    {# Quick Actions - Command Line Style #}
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-white font-mono">QUICK DEPLOY</h3>
+                <div class="h-px flex-1 ml-6 bg-gradient-to-r from-emerald-500/50 to-transparent"></div>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {% for model_name in registered_models[:6] %}
+                <button onclick="window.location.href='{{ url_for('admin:list', model=model_name) }}'"
+                    class="group relative overflow-hidden text-left rounded-lg bg-emerald-950/30 border border-emerald-500/20 p-4 hover:bg-emerald-950/50 hover:border-emerald-400/50 transition-all duration-300">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="relative z-10 flex items-center space-x-3">
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all">
+                            <svg class="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p
+                                class="font-mono text-sm font-semibold text-white group-hover:text-emerald-100 transition-colors truncate">
+                                + {{ model_name }}
+                            </p>
+                            <p class="text-xs text-emerald-600 font-mono">CREATE NEW</p>
+                        </div>
+                        <svg class="h-4 w-4 text-emerald-600 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Registered Models Grid - Data Matrix Style #}
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-lime-500/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-3">
+                    <h3 class="text-lg font-bold text-white font-mono">REGISTERED MODULES</h3>
+                    <span
+                        class="px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
+                        {{ registered_models|length }}
+                    </span>
+                </div>
+                <div class="h-px w-32 bg-gradient-to-r from-transparent to-emerald-500/50"></div>
+            </div>
+            <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {% for model_name in registered_models %}
+                <a href="{{ url_for('admin:list', model=model_name) }}"
+                    class="group relative overflow-hidden flex items-center space-x-3 rounded-lg bg-emerald-950/20 border border-emerald-500/20 p-3 hover:bg-emerald-950/40 hover:border-emerald-400/50 transition-all duration-200">
+                    <div
+                        class="absolute bottom-0 right-0 w-20 h-20 bg-emerald-500/5 rounded-full blur-xl group-hover:bg-emerald-400/10 transition-all">
+                    </div>
+                    <div
+                        class="relative flex h-8 w-8 items-center justify-center rounded bg-black border border-emerald-500/30 group-hover:border-emerald-400/50 transition-all">
+                        <div
+                            class="h-1.5 w-1.5 rounded-full bg-emerald-500 group-hover:bg-emerald-400 group-hover:shadow-lg group-hover:shadow-emerald-400/50 transition-all">
+                        </div>
+                    </div>
+                    <span
+                        class="relative text-sm font-mono font-medium text-emerald-100 group-hover:text-white transition-colors truncate">
+                        {{ model_name }}
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Recent Activity Feed - If Available #}
+    {% if recent_activity %}
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+        <div class="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+            <h3 class="text-lg font-bold text-white font-mono mb-6">SYSTEM LOG</h3>
+            <div class="space-y-3">
+                {% for activity in recent_activity %}
+                <div
+                    class="flex items-start space-x-3 p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/10 hover:border-emerald-500/30 transition-all">
+                    <div
+                        class="flex h-8 w-8 items-center justify-center rounded bg-black border {% if activity.action == 'create' %}border-emerald-500/50 text-emerald-400{% elif activity.action == 'update' %}border-blue-500/50 text-blue-400{% else %}border-red-500/50 text-red-400{% endif %}">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            {% if activity.action == 'create' %}
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            {% elif activity.action == 'update' %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            {% else %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            {% endif %}
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-mono text-emerald-100">
+                            <span class="text-emerald-400 font-semibold">{{ activity.username or "SYSTEM" }}</span>
+                            <span class="text-emerald-700 mx-2">></span>
+                            <span class="text-emerald-600">{{ activity.action|upper }}</span>
+                            <span class="text-emerald-700 mx-2">></span>
+                            <span class="text-white">{{ activity.model_name }}</span>
+                        </p>
+                        <p class="text-xs text-emerald-800 font-mono mt-1">{{ activity.created_at }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% endif %}
-
-    {# Registered Models Grid #}
-    <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-foreground mb-4">Registered Models ({{ registered_models|length }})</h3>
-        <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
-            {% for model_name in registered_models %}
-            <a href="{{ url_for('admin:list', model=model_name) }}"
-                class="flex items-center space-x-2 rounded-lg border border-border p-3 hover:bg-accent hover:border-primary transition-all group">
-                <svg class="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-                </svg>
-                <span class="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{{
-                    model_name }}</span>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
 </div>
 
 {# Chart.js from CDN #}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="{{ csp_nonce }}"></script>
 <script nonce="{{ csp_nonce }}">
-    // Activity Chart
-    const activityCtx = document.getElementById('activityChart').getContext('2d');
-    new Chart(activityCtx, {
-        type: 'line',
-        data: {
-            labels: {{ chart_data.activity_labels | tojson }},
-        datasets: [{
-            label: 'Actions',
-            data: {{ chart_data.activity_values | tojson }},
-        borderColor: 'rgb(99, 102, 241)',
-        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', options);
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Matrix-style Chart Defaults
+    Chart.defaults.font.family = "'JetBrains Mono', 'Courier New', monospace";
+    Chart.defaults.color = '#6EE7B7'; // emerald-300
+
+    // Activity Chart - Green Matrix Style
+    const activityCtx = document.getElementById('activityChart');
+    if (activityCtx) {
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_data.activity_labels | tojson | safe }},
+    datasets: [{
+        label: 'Activity',
+        data: {{ chart_data.activity_values | tojson | safe }},
+        borderColor: '#10b981', // emerald-500
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        borderWidth: 2,
         tension: 0.4,
-        fill: true
-        }]
-    },
-        options: {
+        fill: true,
+        pointBackgroundColor: '#10b981',
+        pointBorderColor: '#000',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#34d399', //emerald-400
+        pointHoverBorderWidth: 3
+                }]
+            },
+    options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
+            maintainAspectRatio: false,
+                plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    titleColor: '#10b981',
+                        bodyColor: '#6ee7b7',
+                            borderColor: '#10b981',
+                                borderWidth: 1,
+                                    padding: 12,
+                                        displayColors: false,
+                                            titleFont: { family: "'JetBrains Mono', monospace", size: 12 },
+                bodyFont: { family: "'JetBrains Mono', monospace", size: 14, weight: 'bold' }
             }
         },
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: {
-                    stepSize: 1
-                }
+                    ticks: { stepSize: 1, color: '#059669' }, // emerald-600
+                grid: { color: 'rgba(16, 185, 129, 0.1)', drawBorder: false }
+            },
+            x: {
+                ticks: { color: '#059669' },
+                grid: { color: 'rgba(16, 185, 129, 0.05)', drawBorder: false }
             }
         }
     }
-});
+        });
+    }
 
-    // Model Distribution Chart
-    const modelCtx = document.getElementById('modelChart').getContext('2d');
-    new Chart(modelCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {{ chart_data.model_labels | tojson }},
-        datasets: [{
-            data: {{ chart_data.model_values | tojson }},
+    // Model Distribution Chart - Green Neon Style
+    const modelCtx = document.getElementById('modelChart');
+    if (modelCtx) {
+        new Chart(modelCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ chart_data.model_labels | tojson | safe }},
+    datasets: [{
+        data: {{ chart_data.model_values | tojson | safe }},
         backgroundColor: [
-            'rgba(99, 102, 241, 0.8)',
-            'rgba(34, 197, 94, 0.8)',
-            'rgba(251, 146, 60, 0.8)',
-            'rgba(236, 72, 153, 0.8)',
-            'rgba(14, 165, 233, 0.8)',
-        ]
-        }]
-    },
-        options: {
+        'rgba(16, 185, 129, 0.9)',   // emerald-500
+        'rgba(52, 211, 153, 0.9)',   // emerald-400
+        'rgba(110, 231, 183, 0.9)',  // emerald-300
+        'rgba(132, 204, 22, 0.9)',   // lime-500
+        'rgba(163, 230, 53, 0.9)',   // lime-400
+        'rgba(5, 150, 105, 0.9)',    // emerald-600
+    ],
+        borderColor: '#000',
+        borderWidth: 2,
+        hoverBorderColor: '#10b981',
+        hoverBorderWidth: 3
+                }]
+            },
+    options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
+            maintainAspectRatio: false,
+                plugins: {
             legend: {
-                position: 'bottom'
+                position: 'bottom',
+                    labels: {
+                    padding: 15,
+                        usePointStyle: true,
+                            color: '#6ee7b7',
+                                font: { family: "'JetBrains Mono', monospace", size: 11 }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    titleColor: '#10b981',
+                        bodyColor: '#6ee7b7',
+                            borderColor: '#10b981',
+                                borderWidth: 1,
+                                    padding: 12,
+                                        titleFont: { family: "'JetBrains Mono', monospace" },
+                bodyFont: { family: "'JetBrains Mono', monospace", weight: 'bold' }
             }
-        }
+        },
+        cutout: '65%'
     }
-});
+        });
+    }
 </script>
 {% endblock %}

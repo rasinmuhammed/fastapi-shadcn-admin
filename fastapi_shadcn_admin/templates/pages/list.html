@@ -1,65 +1,417 @@
 {% extends "layouts/base.html" %}
 {% import "components/buttons.html" as buttons %}
-{% import "components/cards.html" as cards %}
-{% import "components/table.html" as table %}
 
 {% block title %}{{ model_config.name }} List{% endblock %}
 
 {% block breadcrumb %}
-<nav class="flex items-center space-x-2 text-sm text-muted-foreground">
-    <a href="{{ url_for('admin:index') }}" class="hover:text-foreground">Dashboard</a>
-    <span>/</span>
-    <span class="text-foreground">{{ model_config.name }}</span>
+<nav class="flex items-center space-x-2 text-sm font-mono text-emerald-600">
+    <a href="{{ url_for('admin:index') }}" class="hover:text-emerald-400 transition-colors">SYSTEM</a>
+    <span class="text-emerald-800">/</span>
+    <span class="text-emerald-400">{{ model_config.name }}</span>
 </nav>
 {% endblock %}
 
 {% block content %}
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-3xl font-bold tracking-tight text-foreground">{{ model_config.name }}</h1>
-            <p class="text-muted-foreground">Manage your {{ model_config.name | lower }} records</p>
+    {# Header with Terminal Aesthetic #}
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-6">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10 flex items-center justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="h-px w-8 bg-emerald-500"></div>
+                    <span class="text-xs font-mono text-emerald-600 uppercase tracking-widest">DATA MODULE</span>
+                </div>
+                <h1 class="text-3xl font-black text-white font-mono mb-1">{{ model_config.name }}</h1>
+                <p class="text-emerald-300 text-sm font-mono">Manage your {{ model_config.name | lower }} records</p>
+            </div>
+            {% if not model_config.readonly %}
+            <a href="{{ url_for('admin:create', model=model_config.name) }}"
+                class="group relative overflow-hidden flex items-center space-x-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all duration-300">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <svg class="h-5 w-5 text-emerald-400 relative z-10" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="font-mono text-sm font-semibold text-emerald-100 relative z-10">CREATE NEW</span>
+            </a>
+            {% endif %}
         </div>
-        {% if not model_config.readonly %}
-        {{ buttons.link_button(url_for('admin:create', model=model_config.name), "Add New", variant="default") }}
-        {% endif %}
     </div>
 
-    <!-- Search and Filters -->
+    {# Search Bar - Matrix Style #}
     {% if model_config.searchable_fields %}
-    <div class="flex items-center space-x-4">
-        <div class="relative flex-1 max-w-sm">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="search" name="search" placeholder="Search..." value="{{ search_query or '' }}"
-                class="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30 p-4">
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-lime-500/5 rounded-full blur-3xl"></div>
+        <div class="relative z-10 flex items-center space-x-3">
+            <div
+                class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                <svg class="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input type="search" name="search" placeholder="Search records..." value="{{ search_query or '' }}"
+                class="flex-1 h-10 bg-black border border-emerald-500/20 rounded-lg px-4 text-sm font-mono text-emerald-100 placeholder:text-emerald-800 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 hx-get="{{ url_for('admin:list', model=model_config.name) }}"
                 hx-trigger="input changed delay:500ms, search" hx-target="#data-table" hx-swap="innerHTML"
-                hx-indicator=".htmx-indicator" />
+                hx-indicator=".search-loading" />
+            <div class="search-loading htmx-indicator">
+                <div class="flex items-center space-x-2 text-emerald-500 text-xs font-mono">
+                    <div class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></div>
+                    <span>SEARCHING...</span>
+                </div>
+            </div>
         </div>
     </div>
     {% endif %}
 
-    <!-- Data Table -->
-    {% call cards.card() %}
-    <div id="data-table">
-        {{ table.data_table(
-        columns=columns,
-        rows=rows,
-        model_name=model_config.name,
-        id_field=id_field,
-        edit_url_template=edit_url_template,
-        delete_url_template=delete_url_template
-        ) }}
+    {# Data Table - Terminal Matrix Style #}
+    <div class="relative overflow-hidden rounded-xl bg-black border border-emerald-500/30">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div id="data-table" class="relative z-10">
+            {# Table Header #}
+            <div class="border-b border-emerald-500/20 p-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-mono font-bold text-emerald-400 uppercase tracking-wider">RECORDS DATABASE
+                    </h3>
+                    <span class="text-xs font-mono text-emerald-600">{{ rows|length }} of {{ rows|length }}</span>
+                </div>
+            </div>
 
-        {% if total_pages > 1 %}
-        {{ table.pagination(page, total_pages, url_for('admin:list', model=model_config.name)) }}
-        {% endif %}
+            {# Table Content #}
+            {% if rows %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-emerald-500/20 bg-emerald-950/20">
+                            {% for col in columns %}
+                            <th
+                                class="px-4 py-3 text-left text-xs font-mono font-bold text-emerald-500 uppercase tracking-widest">
+                                {{ col.label }}
+                            </th>
+                            {% endfor %}
+                            <th
+                                class="px-4 py-3 text-right text-xs font-mono font-bold text-emerald-500 uppercase tracking-widest">
+                                ACTIONS
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr class="group border-b border-emerald-500/10 hover:bg-emerald-950/30 transition-all duration-200"
+                            data-row-id="{{ row[id_field] }}">
+                            {% for col in columns %}
+                            <td
+                                class="px-4 py-3 text-sm font-mono text-emerald-100 group-hover:text-white transition-colors">
+                                {% if row[col.field] %}{{ row[col.field]|string|truncate(50) }}{% else %}-{% endif %}
+                            </td>
+                            {% endfor %}
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end space-x-2">
+                                    {# Edit Button #}
+                                    {% if not model_config.readonly %}
+                                    <a href="{{ url_for('admin:edit', model=model_config.name, id=row[id_field]) }}"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 hover:border-blue-400/50 transition-all group/btn">
+                                        <svg class="h-4 w-4 text-blue-400 group-hover/btn:text-blue-300 transition-colors"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+
+                                    {# Delete Button #}
+                                    <button type="button"
+                                        onclick="confirmDelete('{{ model_config.name }}', '{{ row[id_field] }}', this)"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 hover:border-red-400/50 transition-all group/btn">
+                                        <svg class="h-4 w-4 text-red-400 group-hover/btn:text-red-300 transition-colors"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            {# Empty State #}
+            <div class="flex flex-col items-center justify-center py-16 px-4">
+                <div
+                    class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-4">
+                    <svg class="h-8 w-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-mono font-bold text-emerald-400 mb-2">NO RECORDS FOUND</h3>
+                <p class="text-sm font-mono text-emerald-600 mb-6">Database is empty. Create your first record.</p>
+                {% if not model_config.readonly %}
+                <a href="{{ url_for('admin:create', model=model_config.name) }}"
+                    class="flex items-center space-x-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 hover:bg-emerald-500/20 transition-all">
+                    <svg class="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="font-mono text-sm font-semibold text-emerald-100">CREATE FIRST RECORD</span>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {# Pagination #}
+            {% if total_pages > 1 %}
+            <div class="border-t border-emerald-500/20 p-4">
+                <div class="flex items-center justify-between">
+                    <div class="text-xs font-mono text-emerald-600">
+                        PAGE {{ page }} OF {{ total_pages }}
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        {% if page > 1 %}
+                        <a href="{{ url_for('admin:list', model=model_config.name, page=page-1) }}"
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all">
+                            <svg class="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                        {% else %}
+                        <div
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-950/30 border border-emerald-500/10 opacity-50 cursor-not-allowed">
+                            <svg class="h-4 w-4 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </div>
+                        {% endif %}
+
+                        {% for p in range(1, total_pages + 1) %}
+                        {% if p == page %}
+                        <div
+                            class="flex h-8 min-w-8 items-center justify-center rounded-lg bg-emerald-500/20 border border-emerald-400/50 px-3">
+                            <span class="text-sm font-mono font-bold text-emerald-400">{{ p }}</span>
+                        </div>
+                        {% elif (p >= page - 2 and p <= page + 2) or p==1 or p==total_pages %} <a
+                            href="{{ url_for('admin:list', model=model_config.name, page=p) }}"
+                            class="flex h-8 min-w-8 items-center justify-center rounded-lg bg-emerald-950/30 border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all px-3">
+                            <span class="text-sm font-mono text-emerald-300">{{ p }}</span>
+                            </a>
+                            {% elif (p == page - 3 or p == page + 3) %}
+                            <span class="text-emerald-800">...</span>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if page < total_pages %} <a
+                                href="{{ url_for('admin:list', model=model_config.name, page=page+1) }}"
+                                class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-400/50 transition-all">
+                                <svg class="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                                </a>
+                                {% else %}
+                                <div
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-950/30 border border-emerald-500/10 opacity-50 cursor-not-allowed">
+                                    <svg class="h-4 w-4 text-emerald-800" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                                {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    {% endcall %}
 </div>
+
+{# Delete Confirmation Modal #}
+<div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.8);">
+    <div
+        class="relative overflow-hidden rounded-xl bg-black border border-red-500/30 p-6 max-w-md w-full animate-modal-in">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-red-500/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+            <div class="flex items-center space-x-3 mb-4">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/20 border border-red-500/30">
+                    <svg class="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-mono font-bold text-white">CONFIRM DELETE</h3>
+                    <p class="text-sm font-mono text-red-400">This action cannot be undone</p>
+                </div>
+            </div>
+            <p class="text-sm font-mono text-emerald-300 mb-6">
+                Are you sure you want to delete this record?
+            </p>
+            <div class="flex items-center justify-end space-x-3">
+                <button onclick="closeDeleteModal()"
+                    class="px-4 py-2 rounded-lg bg-emerald-950/30 border border-emerald-500/20 text-emerald-300 font-mono text-sm hover:bg-emerald-950/50 transition-all">
+                    CANCEL
+                </button>
+                <button id="confirm-delete-btn"
+                    class="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-100 font-mono text-sm font-bold hover:bg-red-500/30 hover:border-red-400/50 transition-all">
+                    DELETE
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Toast Notification Container #}
+<div id="toast-container" class="fixed top-4 right-4 z-50 space-y-3"></div>
+
+<style>
+    @keyframes modal-in {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .animate-modal-in {
+        animation: modal-in 0.2s ease-out;
+    }
+
+    @keyframes toast-in {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .animate-toast-in {
+        animation: toast-in 0.3s ease-out;
+    }
+</style>
+
+<script nonce="{{ csp_nonce }}">
+    // Delete Confirmation
+    let deleteModelName = '';
+    let deleteRecordId = null;
+    let deleteButton = null;
+
+    function confirmDelete(modelName, recordId, btn) {
+        deleteModelName = modelName;
+        deleteRecordId = recordId;
+        deleteButton = btn;
+        document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+        deleteModelName = '';
+        deleteRecordId = null;
+        deleteButton = null;
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async function () {
+        if (!deleteModelName || !deleteRecordId) return;
+
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<div class="h-4 w-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>';
+
+        try {
+            const response = await fetch(`/admin/${deleteModelName}/${deleteRecordId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-Token': '{{ csrf_token }}'
+                }
+            });
+
+            if (response.ok) {
+                // Show success toast
+                showToast('Record deleted successfully', 'success');
+
+                // Remove row with fade animation
+                const row = deleteButton.closest('tr');
+                row.style.transition = 'opacity 0.3s ease-out';
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 300);
+
+                closeDeleteModal();
+            } else {
+                showToast('Failed to delete record', 'error');
+                btn.disabled = false;
+                btn.textContent = 'DELETE';
+            }
+        } catch (error) {
+            showToast('Network error occurred', 'error');
+            btn.disabled = false;
+            btn.textContent = 'DELETE';
+        }
+    });
+
+    // Toast Notifications
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        const colors = {
+            success: 'border-emerald-500/30 bg-emerald-950/90 text-emerald-100',
+            error: 'border-red-500/30 bg-red-950/90 text-red-100',
+            info: 'border-blue-500/30 bg-blue-950/90 text-blue-100'
+        };
+
+        const icons = {
+            success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />',
+            error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />',
+            info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
+        };
+
+        toast.className = `flex items-center space-x-3 rounded-lg border ${colors[type]} p-4 shadow-lg animate-toast-in`;
+        toast.innerHTML = `
+        <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            ${icons[type]}
+        </svg>
+        <span class="font-mono text-sm font-medium">${message}</span>
+    `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.3s ease-out';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Close modal on escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+        }
+    });
+
+    // Close modal on background click
+    document.getElementById('delete-modal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+</script>
 {% endblock %}

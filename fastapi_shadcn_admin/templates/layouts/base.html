@@ -107,31 +107,81 @@
 
 <body class="min-h-screen bg-background font-sans antialiased">
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside class="w-64 border-r border-border bg-background hidden md:block">
-            <div class="flex h-16 items-center border-b border-border px-6">
-                <a href="{{ url_for('admin:index') }}" class="flex items-center space-x-2">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <span class="font-semibold text-foreground">{{ admin_title }}</span>
+        <!-- Sidebar - Matrix Theme -->
+        <aside class="w-64 border-r border-emerald-500/20 bg-black hidden md:block">
+            <!-- Branding Header -->
+            <div
+                class="flex h-16 items-center border-b border-emerald-500/30 px-6 bg-gradient-to-r from-emerald-950/20 to-transparent">
+                <a href="{{ url_for('admin:index') }}" class="flex items-center space-x-3 group">
+                    <!-- Matrix-style logo -->
+                    <div
+                        class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/30 group-hover:bg-emerald-500/20 group-hover:border-emerald-400/50 transition-all">
+                        <svg class="h-5 w-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <div
+                            class="absolute inset-0 bg-emerald-400/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <div>
+                        <span
+                            class="font-bold text-emerald-100 font-mono text-sm tracking-wider group-hover:text-white transition-colors">{{
+                            admin_title }}</span>
+                        <div class="flex items-center space-x-1 mt-0.5">
+                            <div class="h-1 w-1 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span class="text-[10px] font-mono text-emerald-600 uppercase tracking-widest">ONLINE</span>
+                        </div>
+                    </div>
                 </a>
             </div>
+
+            <!-- Navigation -->
             <nav class="space-y-1 p-4">
+                <!-- Dashboard Link -->
+                <a href="{{ url_for('admin:index') }}"
+                    class="group flex items-center space-x-3 rounded-lg px-3 py-2 border border-transparent hover:border-emerald-500/20 hover:bg-emerald-950/30 transition-all {% if current_model is none %}bg-emerald-950/30 border-emerald-500/30{% else %}text-emerald-300{% endif %}">
+                    <svg class="h-5 w-5 {% if current_model is none %}text-emerald-400{% else %}text-emerald-600 group-hover:text-emerald-400{% endif %} transition-colors"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span
+                        class="font-mono text-sm {% if current_model is none %}text-emerald-100 font-semibold{% else %}text-emerald-300 group-hover:text-emerald-100{% endif %} transition-colors">Dashboard</span>
+                </a>
+
+                <!-- Separator -->
                 {% if models %}
+                <div class="relative py-3">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-emerald-500/10"></div>
+                    </div>
+                    <div class="relative flex justify-center text-[10px] uppercase font-mono tracking-widest">
+                        <span class="bg-black px-2 text-emerald-700">Models</span>
+                    </div>
+                </div>
+
+                <!-- Model Links -->
                 {% for model_name in models %}
                 <a href="{{ url_for('admin:list', model=model_name) }}"
-                    class="flex items-center space-x-3 rounded-lg px-3 py-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground {% if current_model == model_name %}bg-accent text-accent-foreground{% endif %}">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-                    </svg>
-                    <span>{{ model_name }}</span>
+                    class="group flex items-center justify-between rounded-lg px-3 py-2 border border-transparent hover:border-emerald-500/20 hover:bg-emerald-950/30 transition-all {% if current_model == model_name %}bg-emerald-950/30 border-emerald-500/30{% endif %}">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-5 w-5 {% if current_model == model_name %}text-emerald-400{% else %}text-emerald-600 group-hover:text-emerald-400{% endif %} transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                        </svg>
+                        <span
+                            class="font-mono text-sm {% if current_model == model_name %}text-emerald-100 font-semibold{% else %}text-emerald-300 group-hover:text-emerald-100{% endif %} transition-colors">{{
+                            model_name }}</span>
+                    </div>
+                    {% if current_model == model_name %}
+                    <div class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                    {% endif %}
                 </a>
                 {% endfor %}
                 {% else %}
-                <div class="px-3 py-2 text-sm text-muted-foreground">
+                <div class="px-3 py-2 text-sm font-mono text-emerald-700">
                     No models registered
                 </div>
                 {% endif %}
@@ -140,18 +190,17 @@
 
         <!-- Main Content -->
         <main class="flex-1 overflow-auto">
-            <!-- Top Bar -->
+            <!-- Top Bar - Matrix Theme -->
             <header
-                class="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                class="sticky top-0 z-40 border-b border-emerald-500/20 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/80">
                 <div class="flex h-16 items-center justify-between px-6">
                     <div class="flex items-center space-x-4">
                         <!-- Mobile menu button -->
                         <button
-                            class="md:hidden inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                            class="md:hidden inline-flex items-center justify-center rounded-md p-2 text-emerald-400 hover:bg-emerald-950/30 hover:text-emerald-300 border border-transparent hover:border-emerald-500/20 transition-all"
                             x-data @click="$dispatch('toggle-sidebar')">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
 
@@ -161,12 +210,16 @@
                     <div class="flex items-center space-x-4">
                         <!-- Loading indicator -->
                         <div class="htmx-indicator">
-                            <svg class="h-5 w-5 animate-spin text-muted-foreground" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4" />
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
+                            <div class="flex items-center space-x-2">
+                                <svg class="h-4 w-4 animate-spin text-emerald-500" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="3">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" />
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                                <span
+                                    class="text-xs font-mono text-emerald-600 uppercase tracking-wider">PROCESSING...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
