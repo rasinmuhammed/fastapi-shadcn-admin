@@ -33,8 +33,9 @@ def create_admin_router(
     templates,
     prefix: str = "/admin",
     title: str = "Admin",
-    session_dependency: Callable[[], AsyncGenerator["AsyncSession", None]]
-    | None = None,
+    session_dependency: (
+        Callable[[], AsyncGenerator["AsyncSession", None]] | None
+    ) = None,
 ) -> APIRouter:
     """
     Create the admin router with all endpoints.
@@ -67,9 +68,9 @@ def create_admin_router(
     @router.get("/", response_class=HTMLResponse, name="admin:index")
     async def dashboard(
         request: Request,
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """Admin dashboard with analytics."""
         from datetime import datetime, timedelta
