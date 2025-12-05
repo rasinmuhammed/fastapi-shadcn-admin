@@ -178,9 +178,9 @@ def create_admin_router(
         page: int = Query(1, ge=1),
         per_page: int = Query(25, ge=1, le=100),
         search: str | None = Query(None),
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """List all records of a model."""
         # Validate model access
@@ -300,9 +300,9 @@ def create_admin_router(
     async def create_submit(
         request: Request,
         model: str,
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """Handle create form submission."""
         try:
@@ -357,9 +357,9 @@ def create_admin_router(
         request: Request,
         model: str,
         id: str,
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """Show edit form for a record."""
         try:
@@ -416,9 +416,9 @@ def create_admin_router(
         request: Request,
         model: str,
         id: str,
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """Handle update form submission."""
         try:
@@ -479,9 +479,9 @@ def create_admin_router(
         model: str,
         id: str,
         token: str = Query(...),
-        session: "AsyncSession" = Depends(session_dependency)
-        if session_dependency
-        else None,
+        session: "AsyncSession" = (
+            Depends(session_dependency) if session_dependency else None
+        ),
     ):
         """Delete a record."""
         # Validate signed token
