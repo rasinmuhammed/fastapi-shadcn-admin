@@ -67,11 +67,11 @@ def extract_sqlalchemy_fields(
             field_type = FieldType.TEXT  # Default
             python_type = column.type.python_type
 
-            if python_type == bool:
+            if python_type is bool:
                 field_type = FieldType.BOOLEAN
-            elif python_type == int:
+            elif python_type is int:
                 field_type = FieldType.NUMBER
-            elif python_type == float:
+            elif python_type is float:
                 field_type = FieldType.FLOAT
             elif hasattr(column.type, "__visit_name__"):
                 if column.type.__visit_name__ == "text":
