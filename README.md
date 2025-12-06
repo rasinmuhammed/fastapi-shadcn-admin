@@ -13,7 +13,7 @@
 
 ## 🎯 Live Demo
 
-**[👉 Try the Live Demo →](https://fastapi-matrix-admin.onrender.com/admin/)**
+**[👉 Try the Live Demo →](https://fastapi-matrix-admin-demo.onrender.com/admin/)**
 
 Experience the Matrix:
 - ⚡ **Matrix Green/Black Theme** - Terminal-style design with neon glow effects
