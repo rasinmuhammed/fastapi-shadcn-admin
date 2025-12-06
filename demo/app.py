@@ -229,13 +229,12 @@ async def root():
     return RedirectResponse(url="/admin")
 
 
-# Initialize admin with read-only mode for public demo
+# Initialize admin
 admin = ShadcnAdmin(
     app,
     engine=engine,
-    secret_key="demo-live-key-for-vercel-deployment",
-    title="FastAPI Shadcn Admin Demo",
-    readonly=True  # Read-only mode: visitors can browse but not modify data
+    secret_key="demo-live-key-for-render-deployment",
+    title="FastAPI Shadcn Admin Demo"
 )
 
 # 🎯 Auto-discover ALL models with ONE LINE!
