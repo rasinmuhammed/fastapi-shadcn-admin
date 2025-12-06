@@ -11,14 +11,23 @@
 
 **Zero Node.js** • **Pydantic v2** • **Full Async** • **Military-Grade Security**
 
-## 🎯 Live Demo
+## 🎯 Try the Demo
 
-**[👉 Try the Live Demo →](https://fastapi-shadcn-admin-iscte2c9y.vercel.app)**
+**Local Demo** (Works immediately):
+```bash
+git clone https://github.com/rasinmuhammed/fastapi-shadcn-admin.git
+cd fastapi-shadcn-admin/demo
+pip install -r requirements.txt
+python app.py
+# Visit http://localhost:8000/admin
+```
 
-Experience the Matrix-themed UI with auto-discovered models. The demo showcases:
+**Live Demo:** Coming soon! (Deploying to Railway)
+
+Experience the Matrix-themed UI with auto-discovered models:
 - ✨ Matrix green/black aesthetic with terminal-style design
 - 🔍 Auto-discovery of 4 models (BlogPost, Product, Author, Category)
-- 📝 Full CRUD operations (read-only mode for public safety)
+- 📝 Full CRUD operations
 - 🎨 Smooth animations and micro-interactions
 
 ---
