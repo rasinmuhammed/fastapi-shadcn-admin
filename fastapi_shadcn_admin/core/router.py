@@ -84,9 +84,11 @@ def extract_sqlalchemy_fields(
                 name=field_name,
                 field_type=field_type,
                 required=not column.nullable,
-                default=column.default.arg
-                if column.default and hasattr(column.default, "arg")
-                else None,
+                default=(
+                    column.default.arg
+                    if column.default and hasattr(column.default, "arg")
+                    else None
+                ),
                 title=field_name.replace("_", " ").title(),
                 description=None,
                 placeholder=None,
