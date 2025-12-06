@@ -27,71 +27,74 @@ from fastapi_shadcn_admin.core.crud import CRUDBase
 from fastapi_shadcn_admin.core.integrator import FieldDefinition, FieldType
 
 
-def extract_sqlalchemy_fields(model: Any, exclude: list[str] | None = None, include: list[str] | None = None) -> list[FieldDefinition]:
+def extract_sqlalchemy_fields(
+    model: Any, exclude: list[str] | None = None, include: list[str] | None = None
+) -> list[FieldDefinition]:
     """
     Extract fields from a SQLAlchemy model and convert to FieldDefinition objects.
-    
+
     Args:
         model: SQLAlchemy model class
         exclude: List of field names to exclude
         include: List of field names to include (if specified, only these fields are included)
-    
+
     Returns:
         List of FieldDefinition objects for template rendering
     """
     from sqlalchemy import inspect as sqla_inspect
     from sqlalchemy.orm import ColumnProperty
-    
+
     mapper = sqla_inspect(model)
     fields = []
-    
+
     # Get all columns
     for attr in mapper.attrs:
         if isinstance(attr, ColumnProperty):
             column = attr.columns[0]
             field_name = attr.key
-            
+
             # Apply include/exclude filters
             if include and field_name not in include:
                 continue
             if exclude and field_name in exclude:
                 continue
-            
+
             # Skip primary key (id) - it's auto-generated
             if column.primary_key:
                 continue
-            
+
             # Determine field type from SQLAlchemy column type
             field_type = FieldType.TEXT  # Default
             python_type = column.type.python_type
-            
+
             if python_type == bool:
                 field_type = FieldType.BOOLEAN
             elif python_type == int:
                 field_type = FieldType.NUMBER
             elif python_type == float:
                 field_type = FieldType.FLOAT
-            elif hasattr(column.type, '__visit_name__'):
-                if column.type.__visit_name__ == 'text':
+            elif hasattr(column.type, "__visit_name__"):
+                if column.type.__visit_name__ == "text":
                     field_type = FieldType.TEXTAREA
-                elif column.type.__visit_name__ in ('date', 'datetime'):
+                elif column.type.__visit_name__ in ("date", "datetime"):
                     field_type = FieldType.DATETIME
-            
+
             # Create FieldDefinition
             field_def = FieldDefinition(
                 name=field_name,
                 field_type=field_type,
                 required=not column.nullable,
-                default=column.default.arg if column.default and hasattr(column.default, 'arg') else None,
-                title=field_name.replace('_', ' ').title(),
+                default=column.default.arg
+                if column.default and hasattr(column.default, "arg")
+                else None,
+                title=field_name.replace("_", " ").title(),
                 description=None,
                 placeholder=None,
             )
-            
-            fields.append(field_def)
-    
-    return fields
 
+            fields.append(field_def)
+
+    return fields
 
 
 def create_admin_router(
@@ -413,7 +416,7 @@ def create_admin_router(
             raw_data = {
                 k: v for k, v in dict(form_data).items() if not k.startswith("_")
             }
-            
+
             # Convert string values to appropriate types based on model
             create_data = {}
             fields = extract_sqlalchemy_fields(model_config.model)
@@ -422,9 +425,17 @@ def create_admin_router(
                     value = raw_data[field.name]
                     # Convert boolean strings to actual booleans
                     if field.field_type == FieldType.BOOLEAN:
-                        create_data[field.name] = value in ("true", "True", "1", "on", True)
+                        create_data[field.name] = value in (
+                            "true",
+                            "True",
+                            "1",
+                            "on",
+                            True,
+                        )
                     # Convert numeric strings to numbers
-                    elif field.field_type == FieldType.NUMBER and isinstance(value, str):
+                    elif field.field_type == FieldType.NUMBER and isinstance(
+                        value, str
+                    ):
                         create_data[field.name] = int(value) if value else None
                     elif field.field_type == FieldType.FLOAT and isinstance(value, str):
                         create_data[field.name] = float(value) if value else None
@@ -555,7 +566,7 @@ def create_admin_router(
             raw_data = {
                 k: v for k, v in dict(form_data).items() if not k.startswith("_")
             }
-            
+
             # Convert string values to appropriate types based on model
             update_data = {}
             fields = extract_sqlalchemy_fields(model_config.model)
@@ -564,9 +575,17 @@ def create_admin_router(
                     value = raw_data[field.name]
                     # Convert boolean strings to actual booleans
                     if field.field_type == FieldType.BOOLEAN:
-                        update_data[field.name] = value in ("true", "True", "1", "on", True)
+                        update_data[field.name] = value in (
+                            "true",
+                            "True",
+                            "1",
+                            "on",
+                            True,
+                        )
                     # Convert numeric strings to numbers
-                    elif field.field_type == FieldType.NUMBER and isinstance(value, str):
+                    elif field.field_type == FieldType.NUMBER and isinstance(
+                        value, str
+                    ):
                         update_data[field.name] = int(value) if value else None
                     elif field.field_type == FieldType.FLOAT and isinstance(value, str):
                         update_data[field.name] = float(value) if value else None
