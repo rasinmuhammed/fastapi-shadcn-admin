@@ -62,51 +62,19 @@ class Category(Base):
     active: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
-# Create FastAPI app
-app = FastAPI(
-    title="FastAPI Shadcn Admin - Live Demo",
-    description="Showcasing Matrix UI and Auto-Discovery",
-    version="1.0.0"
-)
+# Lifespan context for startup/shutdown (serverless compatible)
+from contextlib import asynccontextmanager
 
-# Redirect root to admin
-@app.get("/", include_in_schema=False)
-async def root():
-    return RedirectResponse(url="/admin")
-
-
-# Create async SQLite engine
-engine = create_async_engine(
-    "sqlite+aiosqlite:///./demo.db",
-    echo=False,
-    connect_args={"check_same_thread": False}
-)
-
-# Initialize admin with read-only mode for public demo
-admin = ShadcnAdmin(
-    app,
-    engine=engine,
-    secret_key="demo-live-key-for-vercel-deployment",
-    title="FastAPI Shadcn Admin Demo",
-    readonly=True  # Read-only mode: visitors can browse but not modify data
-)
-
-# 🎯 Auto-discover ALL models with ONE LINE!
-admin.auto_discover(Base)
-
-
-# Startup: Create tables and seed data
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
     async with engine.begin() as conn:
-        # Create all tables
         await conn.run_sync(Base.metadata.create_all)
     
     # Seed demo data
     from sqlalchemy import select, func
     Session = async_sessionmaker(engine, expire_on_commit=False)
     async with Session() as session:
-        # Check if data exists
         result = await session.execute(select(func.count()).select_from(BlogPost))
         count = result.scalar()
         
@@ -232,7 +200,22 @@ async def startup():
             ])
             
             await session.commit()
+    
+    yield  # App runs here
+    
+    # Shutdown (cleanup if needed)
+    await engine.dispose()
 
 
-# For Vercel
-# The app instance is automatically detected
+# Create FastAPI app with lifespan
+app = FastAPI(
+    title="FastAPI Shadcn Admin - Live Demo",
+    description="Showcasing Matrix UI and Auto-Discovery",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+# Redirect root to admin
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/admin")
