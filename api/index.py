@@ -1,66 +1,78 @@
 """
-Ultra-minimal FastAPI demo for Vercel
+Bare minimum Vercel Python function - no dependencies
 """
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from mangum import Mangum
 
-app = FastAPI()
-
-MATRIX_HTML = """
-<!DOCTYPE html>
+def handler(request, response):
+    """Vercel Python runtime handler"""
+    html = """<!DOCTYPE html>
 <html>
 <head>
     <title>FastAPI Shadcn Admin Demo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { font-family: 'Courier New', monospace; background: #000; }</style>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            background: #000; 
+            color: #10b981; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container { text-align: center; padding: 2rem; }
+        h1 { font-size: 2.5rem; text-shadow: 0 0 10px #10b981; }
+        .card { 
+            background: rgba(16, 185, 129, 0.1); 
+            border: 1px solid #10b981; 
+            padding: 1rem; 
+            margin: 0.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 120px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #10b981;
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 0.5rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+    </style>
 </head>
-<body class="bg-black text-emerald-400 min-h-screen flex items-center justify-center">
-    <div class="text-center p-8">
-        <h1 class="text-4xl font-bold mb-4" style="text-shadow: 0 0 10px #10b981;">⚡ MATRIX ADMIN</h1>
-        <p class="text-emerald-300 mb-6">FastAPI Shadcn Admin - Live Demo</p>
+<body>
+    <div class="container">
+        <h1>⚡ MATRIX ADMIN</h1>
+        <p>FastAPI Shadcn Admin - Live Demo</p>
         
-        <div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-8">
-            <div class="bg-emerald-900/30 border border-emerald-700 rounded-lg p-4">
-                <p class="text-2xl font-bold">4</p>
-                <p class="text-sm text-emerald-500">Models</p>
-            </div>
-            <div class="bg-emerald-900/30 border border-emerald-700 rounded-lg p-4">
-                <p class="text-2xl font-bold">8</p>
-                <p class="text-sm text-emerald-500">Records</p>
-            </div>
+        <div style="margin: 2rem 0;">
+            <div class="card"><strong>4</strong><br><small>Models</small></div>
+            <div class="card"><strong>8</strong><br><small>Records</small></div>
         </div>
         
-        <div class="space-y-2 text-left max-w-md mx-auto mb-8">
-            <div class="bg-emerald-900/20 border border-emerald-800 rounded p-3">📝 BlogPost - 2 records</div>
-            <div class="bg-emerald-900/20 border border-emerald-800 rounded p-3">📦 Product - 2 records</div>
-            <div class="bg-emerald-900/20 border border-emerald-800 rounded p-3">👤 Author - 2 records</div>
-            <div class="bg-emerald-900/20 border border-emerald-800 rounded p-3">🏷️ Category - 2 records</div>
+        <div style="margin: 1.5rem 0; text-align: left; max-width: 300px; margin-left: auto; margin-right: auto;">
+            <div class="card" style="display: block; margin: 0.5rem 0;">📝 BlogPost</div>
+            <div class="card" style="display: block; margin: 0.5rem 0;">📦 Product</div>
+            <div class="card" style="display: block; margin: 0.5rem 0;">👤 Author</div>
+            <div class="card" style="display: block; margin: 0.5rem 0;">🏷️ Category</div>
         </div>
         
-        <div class="space-x-4">
-            <a href="https://github.com/rasinmuhammed/fastapi-shadcn-admin" 
-               class="inline-block px-6 py-2 bg-emerald-600 text-black font-bold rounded hover:bg-emerald-500">
-                ⭐ GitHub
-            </a>
-            <a href="https://pypi.org/project/fastapi-shadcn-admin/" 
-               class="inline-block px-6 py-2 border border-emerald-600 rounded hover:bg-emerald-600/20">
-                📦 PyPI
-            </a>
-        </div>
+        <a href="https://github.com/rasinmuhammed/fastapi-shadcn-admin" class="btn">⭐ GitHub</a>
+        <a href="https://pypi.org/project/fastapi-shadcn-admin/" class="btn btn-outline">📦 PyPI</a>
         
-        <p class="mt-8 text-emerald-600 text-sm">pip install fastapi-shadcn-admin</p>
+        <p style="margin-top: 2rem; opacity: 0.7;">pip install fastapi-shadcn-admin</p>
     </div>
 </body>
-</html>
-"""
-
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    return HTMLResponse(content=MATRIX_HTML)
-
-@app.get("/api/health")
-async def health():
-    return {"status": "ok"}
-
-handler = Mangum(app, lifespan="off")
+</html>"""
+    
+    response.status_code = 200
+    response.headers['Content-Type'] = 'text/html'
+    response.body = html
+    return response
